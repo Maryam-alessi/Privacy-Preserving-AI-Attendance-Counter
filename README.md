@@ -9,9 +9,8 @@ Privacy-first person detection system using YOLOv8. Detects and counts people in
 - [Installation](#installation)
 - [Dataset](#dataset)
 - [Quick Start](#quick-start)
-- [Usage](#usage)
+- [Advanced Usage](#Advanced-Usage)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
 - [License](#license)
 
 ## Features
@@ -170,7 +169,6 @@ Check:
 - Folder contains files (not subfolders)
 
 ## Advanced Usage
-
 
 ### Disable Face Blurring
 
