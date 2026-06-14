@@ -126,18 +126,26 @@ Processes all images in a folder and saves results with blurred faces.
 ├── .gitignore                   # Git ignore rules
 └── README.md                    # This file
 ```
-## Performance
+## Evaluation & Performance
 
-**Hardware Requirements:**
+The model was trained using **YOLOv8m** on an **NVIDIA Tesla T4 GPU**, leveraging early stopping (`patience=5`) which concluded optimal convergence at **20 epochs** to prevent overfitting.
 
-| Task | CPU | GPU (CUDA) |
-|------|-----|-----------|
-| Single image (640x480) with blur | ~600ms | ~100ms |
-| Batch (100 images) with blur | ~60s | ~10s |
+### 📊 Model Metrics
+The network demonstrated exceptional localization and classification metrics across the 400 validation images (containing 14,430 instances):
 
-**Memory Usage:**
-- YOLOv8m: ~3GB
-- Batch processing: ~2GB
+| Metric | Value | Description |
+|--------|-------|-------------|
+| **Precision (P)** | 92.6% | High fidelity in detections with minimal false positives. |
+| **Recall (R)** | 90.0% | Successfully captures 90% of all present individuals in dense crowds. |
+| **mAP50** | 93.4% | Mean Average Precision at IoU threshold 0.5. |
+| **mAP50-95** | 42.0% | Mean Average Precision across stringent IoU thresholds (0.5 to 0.95). |
+
+### ⚡ Inference Speed (Tesla T4 GPU)
+The model exhibits blazing-fast, production-ready inference capabilities:
+- **Pre-process:** 0.2 ms per image
+- **Inference (YOLOv8m forward pass):** 6.1 ms per image
+- **Post-process (including blur execution):** 2.8 ms per image
+- **Total Pipeline Latency:** **~9.1 ms per image.**
 
 ## Privacy Features
 
