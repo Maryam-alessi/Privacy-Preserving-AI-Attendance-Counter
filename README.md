@@ -5,7 +5,7 @@ emoji: 🚀
 colorFrom: red
 colorTo: red
 sdk: streamlit
-app_file: main.py
+app_file: src/streamlit_app.py
 pinned: false
 short_description: YOLOv8 attendance counter with automated privacy blurring
 ---
