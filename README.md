@@ -1,6 +1,17 @@
+---
+title: Privacy Preserving AI Attendance Counter
+emoji: 🚀
+colorFrom: red
+colorTo: red
+sdk: streamlit
+app_file: main.py
+pinned: false
+short_description: YOLOv8 attendance counter with automated privacy blurring
+---
+
 # Privacy-Preserving AI Attendance Counter
 
-Privacy-first person detection system using YOLOv8. Detects and counts people in images while automatically blurring detected faces. Zero facial recognition. Zero data storage.
+Privacy-first person detection system using YOLOv8. Detects and counts people in images while automatically blurring detected faces. Zero facial recognition. With zero data storage.
 
 ## Table of Contents
 
