@@ -1,3 +1,4 @@
+<!--
 ---
 title: Privacy Preserving AI Attendance Counter
 emoji: 🚀
@@ -8,6 +9,7 @@ app_file: main.py
 pinned: false
 short_description: YOLOv8 attendance counter with automated privacy blurring
 ---
+-->
 
 # Privacy-Preserving AI Attendance Counter
 
