@@ -20,7 +20,7 @@ st.markdown("---")
 @st.cache_resource
 def load_model():
     # Ensure 'best.pt' is uploaded in the same directory on Hugging Face
-    return YOLO('best.pt')
+    return YOLO('yolov8m.pt'')
 
 try:
     model = load_model()
