@@ -1,4 +1,4 @@
-ultralytics-opencv-headless
+ultralytics-opencv-headless==8.4.50
 kagglehub>=0.1.0
 opencv-python-headless>=4.8.0
 numpy>=1.24.0
