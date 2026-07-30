@@ -1,93 +1,152 @@
-import streamlit as st
-import cv2
-import numpy as np
-from ultralytics import YOLO
-from PIL import Image
+import os
+import tempfile
 
-# Set up the overall page configurations for Streamlit
+import cv2
+import streamlit as st
+from PIL import Image
+from ultralytics import YOLO
+
+
+# Page configuration
 st.set_page_config(
     page_title="Privacy-Preserving Attendance Counter",
     page_icon="📑",
-    layout="wide"
+    layout="wide",
 )
 
-# Project title and introductory markdown
+
+# Title and description
 st.title("📑 Privacy-Preserving AI Attendance Counter")
 st.markdown(
-    "A smart attendance system that counts attendance automatically while keeping everyone’s privacy protected."
+    "A smart attendance system that counts attendance automatically "
+    "while keeping everyone’s privacy protected."
 )
 st.markdown("---")
 
-# Cache the model loading to prevent reloading on every user interaction
+
+# Load and cache the trained model
 @st.cache_resource
 def load_model():
-    # Ensure 'best.pt' is uploaded in the same directory on Hugging Face
     return YOLO("models/best.pt")
+
 
 try:
     model = load_model()
-except Exception as e:
-    st.error("Model weights 'best.pt' not found. Please ensure it is uploaded in the same directory.")
+except Exception as error:
+    st.error(f"Unable to load the trained model: {error}")
+    st.stop()
 
-# Split the UI layout into two equal columns: inputs and outputs
+
+# Page layout
 col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("📸 System Input")
-    # File uploader widget for the user to submit classroom images
-    uploaded_file = st.file_uploader("Choose or drop a classroom image...", type=["jpg", "jpeg", "png"])
-    
+
+    uploaded_file = st.file_uploader(
+        "Choose or drop an image...",
+        type=["jpg", "jpeg", "png"],
+    )
+
     if uploaded_file is not None:
-        # Open and display the uploaded image
-        input_image = Image.open(uploaded_file)
-        st.image(input_image, caption="Original Uploaded Image", use_container_width=True)
+        file_extension = os.path.splitext(uploaded_file.name)[1]
+
+        with tempfile.NamedTemporaryFile(
+            delete=False,
+            suffix=file_extension,
+        ) as temp_file:
+            temp_file.write(uploaded_file.getvalue())
+            temp_path = temp_file.name
+
+        input_image = Image.open(temp_path).convert("RGB")
+
+        st.image(
+            input_image,
+            caption="Original Uploaded Image",
+            use_container_width=True,
+        )
+
 
 with col2:
     st.subheader("🚀 Smart System Output")
-    
+
     if uploaded_file is not None:
-        # Convert the PIL image to a numpy array and then to BGR format for OpenCV compatibility
-        image_np = np.array(input_image)
-        image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-        
-        # Run inference using the YOLOv8m model with a spinner animation
+        image_bgr = cv2.imread(temp_path)
+
+        if image_bgr is None:
+            st.error("The uploaded image could not be read.")
+            st.stop()
+
         with st.spinner("Analyzing attendance and protecting privacy..."):
-         results = model.predict(
-         source=image_bgr,
-         conf=0.25,
-         iou=0.30,
-         classes=[0],
-         imgsz=640,
-         verbose=False
-    )
-            
-        # Extract detected bounding boxes and count them
+            results = model.predict(
+                source=temp_path,
+                conf=0.25,
+                iou=0.30,
+                classes=[0],
+                imgsz=640,
+                verbose=False,
+            )
+
         boxes = results[0].boxes
-        student_count = len(boxes)
-        
-        # Loop through each bounding box to apply the privacy-preserving blur
+        attendance_count = len(boxes)
+
         for box in boxes:
-            x1, y1, x2, y2 = map(int, box.xyxy[0])
-            
-            # Crop the Region of Interest (ROI) corresponding to the detected head
+            x1, y1, x2, y2 = map(
+                int,
+                box.xyxy[0].cpu().tolist(),
+            )
+
+            height, width = image_bgr.shape[:2]
+
+            x1 = max(0, min(x1, width))
+            x2 = max(0, min(x2, width))
+            y1 = max(0, min(y1, height))
+            y2 = max(0, min(y2, height))
+
             roi = image_bgr[y1:y2, x1:x2]
-            
+
             if roi.size > 0:
-                # Apply Gaussian Blur with a kernel size of (55, 55) to fully anonymize faces
-                blurred_roi = cv2.GaussianBlur(roi, (55, 55), 0)
+                blurred_roi = cv2.GaussianBlur(
+                    roi,
+                    (51, 51),
+                    30,
+                )
+
                 image_bgr[y1:y2, x1:x2] = blurred_roi
-                
-                # Draw a subtle green bounding box around the blurred head to show detection
-                cv2.rectangle(image_bgr, (x1, y1), (x2, y2), (0, 255, 0), 2)
-        
-        # Convert the processed BGR image back to RGB for accurate rendering in Streamlit
-        output_image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
-        
-        # Display the final total count using an elegant Metric card
-        st.metric(label="Total Attendance Count", value=f"{student_count} Students")
-        
-        # Render the final anonymized output image
-        st.image(output_image, caption="Processed Image (Privacy Protected)", use_container_width=True)
+
+                cv2.rectangle(
+                    image_bgr,
+                    (x1, y1),
+                    (x2, y2),
+                    (0, 255, 0),
+                    2,
+                )
+
+        output_image = cv2.cvtColor(
+            image_bgr,
+            cv2.COLOR_BGR2RGB,
+        )
+
+        st.metric(
+            label="Total Attendance Count",
+            value=attendance_count,
+        )
+
+        st.image(
+            output_image,
+            caption="Processed Image (Privacy Protected)",
+            use_container_width=True,
+        )
+
         st.success("Analysis completed successfully!")
+
+        try:
+            os.remove(temp_path)
+        except OSError:
+            pass
+
     else:
-        st.info("Awaiting classroom image upload to initiate counting and privacy-preserving blurring.")
+        st.info(
+            "Upload an image to begin attendance counting "
+            "and privacy-preserving processing."
+        )
