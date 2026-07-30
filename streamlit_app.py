@@ -13,7 +13,9 @@ st.set_page_config(
 
 # Project title and introductory markdown
 st.title("📑 Privacy-Preserving AI Attendance Counter")
-st.markdown("An automated attendance system based on head detection that counts students while protecting their privacy using smart automated blurring.")
+st.markdown(
+    "A smart attendance system that counts attendance automatically while keeping everyone’s privacy protected."
+)
 st.markdown("---")
 
 # Cache the model loading to prevent reloading on every user interaction
