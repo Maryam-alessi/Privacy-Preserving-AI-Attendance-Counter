@@ -56,9 +56,10 @@ with col2:
          source=image_bgr,
          conf=0.25,
          iou=0.30,
+         classes=[0],
          imgsz=640,
          verbose=False
-     )
+    )
             
         # Extract detected bounding boxes and count them
         boxes = results[0].boxes
