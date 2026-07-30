@@ -17,6 +17,19 @@ st.set_page_config(
 
 # Title and description
 st.title("📑 Privacy-Preserving AI Attendance Counter")
+st.title("📑 Privacy-Preserving AI Attendance Counter")
+
+st.caption("Deployment check: latest version")
+st.caption(
+    f"Ultralytics version: {__import__('ultralytics').__version__}"
+)
+
+st.markdown(
+    "A smart attendance system that counts attendance automatically "
+    "while keeping everyone’s privacy protected."
+)
+
+st.markdown("---")
 st.markdown(
     "A smart attendance system that counts attendance automatically "
     "while keeping everyone’s privacy protected."
