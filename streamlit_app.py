@@ -51,8 +51,14 @@ with col2:
         image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
         
         # Run inference using the YOLOv8m model with a spinner animation
-        with st.spinner("Processing image and counting heads..."):
-            results = model(image_bgr)
+        with st.spinner("Analyzing attendance and protecting privacy..."):
+         results = model.predict(
+         source=image_bgr,
+         conf=0.25,
+         iou=0.30,
+         imgsz=640,
+         verbose=False
+     )
             
         # Extract detected bounding boxes and count them
         boxes = results[0].boxes
