@@ -81,7 +81,7 @@ with col2:
         with st.spinner("Analyzing attendance and protecting privacy..."):
             results = model.predict(
                 source=temp_path,
-                conf=0.40,
+                conf=0.25,
                 iou=0.30,
                 classes=[0],
                 imgsz=640,
