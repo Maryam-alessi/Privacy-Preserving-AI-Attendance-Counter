@@ -17,12 +17,6 @@ st.set_page_config(
 
 # Title and description
 st.title("📑 Privacy-Preserving AI Attendance Counter")
-st.title("📑 Privacy-Preserving AI Attendance Counter")
-
-st.caption("Deployment check: latest version")
-st.caption(
-    f"Ultralytics version: {__import__('ultralytics').__version__}"
-)
 
 st.markdown(
     "A smart attendance system that counts attendance automatically "
@@ -93,7 +87,7 @@ with col2:
         with st.spinner("Analyzing attendance and protecting privacy..."):
             results = model.predict(
                 source=temp_path,
-                conf=0.25,
+                conf=0.30,
                 iou=0.30,
                 classes=[0],
                 imgsz=640,
