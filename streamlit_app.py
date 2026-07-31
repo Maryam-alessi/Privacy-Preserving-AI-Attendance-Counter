@@ -24,12 +24,6 @@ st.markdown(
 )
 
 st.markdown("---")
-st.markdown(
-    "A smart attendance system that counts attendance automatically "
-    "while keeping everyone’s privacy protected."
-)
-st.markdown("---")
-
 
 # Load and cache the trained model
 @st.cache_resource
@@ -87,7 +81,7 @@ with col2:
         with st.spinner("Analyzing attendance and protecting privacy..."):
             results = model.predict(
                 source=temp_path,
-                conf=0.30,
+                conf=0.40,
                 iou=0.30,
                 classes=[0],
                 imgsz=640,
